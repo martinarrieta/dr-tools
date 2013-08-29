@@ -49,9 +49,7 @@ copy_frms(){
 }
 
 
-
-
-if ! options=$(getopt -o crdht: -l create-instance,run-temp-instance,help,tables-file: -- "$@")
+if ! options=$(getopt  --long create-instance,run-temp-instance,help,tables-file: -- "$@")
 then
     p_help
     exit 1
@@ -74,10 +72,11 @@ do
     --source-datadir ) SOURCE_DATADIR="$2"; shift ;;
     --help ) p_help ;;
     --tables-file ) TABLES_FILE="$2"; shift ;;
-    (--)  ;;
-    (*)  ;;  
-  esac
-  shift
+    (--) shift; break;;
+    (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
+    (*) break;;
+    esac
+    shift
 done
 
 if [ $flag_create_dummy_tables -eq 0 -a -r $TABLES_FILE  ]; then
