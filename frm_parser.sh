@@ -79,15 +79,15 @@ do
     shift
 done
 
-if [[ $flag_create_dummy_tables -eq 0 ]] && [[ -r $TABLES_FILE ]]; then
+if [[ $flag_create_dummy_tables -eq 0 && -r $TABLES_FILE ]]; then
     log_info "Creating dummy tables"
     create_dummy_tables
 fi
 
-if [[ $flag_create_defs -eq 0 ]] && [[ -r $TABLES_FILE  ]]; then
+if [[ $flag_create_defs -eq 0 && -r $TABLES_FILE  ]]; then
     create_defs    
 fi
 
-if [[ $flag_copy_frms -eq 0 ]] && [[ -r $TABLES_FILE ]] && [[ -d $SOURCE_DATADIR ]]; then
+if [[ $flag_copy_frms -eq 0 && -r $TABLES_FILE && -d $SOURCE_DATADIR ]]; then
     copy_frms
 fi
