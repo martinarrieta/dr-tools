@@ -15,6 +15,19 @@ create_dummy_tables(){
 
 }
 
+create_defs(){
+
+    for s in $(cat $TABLES_FILE); do
+        db=$(get_db "$s")
+        table=$(get_table "$s")
+        
+        cmd="$RT_BIN_create_defs --host=127.0.0.1 --user=root --port=$TEMP_port --db=$db --table=$table > $RT_definitions_directory/table_defs.h.$db.$table"
+        eval $cmd 
+        
+    done
+
+}
+
 copy_frms(){
 
     if [ ! -d "$TEMP_datadir" ]; then
@@ -70,6 +83,11 @@ if [ $flag_create_dummy_tables -eq 0 -a -r $TABLES_FILE  ]; then
     create_dummy_tables
     
 fi
+
+if [ $flag_create_defs -eq 0 -a -r $TABLES_FILE  ]; then
+    create_defs    
+fi
+
 
 if [ $flag_copy_frms -eq 0 -a -r $TABLES_FILE -a -d $SOURCE_DATADIR ]; then
     copy_frms
