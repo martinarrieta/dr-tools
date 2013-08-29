@@ -71,7 +71,7 @@ do
     --create-defs ) flag_create_defs=0 ;;
     --source-datadir ) SOURCE_DATADIR="$2"; shift ;;
     --help ) p_help ;;
-    --tables-file ) TABLES_FILE=$2; shift ;;
+    --tables-file ) TABLES_FILE="$2"; shift ;;
     (--) shift; break;;
     (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
     (*) break;;
@@ -79,16 +79,18 @@ do
     shift
 done
 
+log_debug "$flag_create_dummy_tables -eq 0 -a -r $TABLES_FILE"
 if [ $flag_create_dummy_tables -eq 0 -a -r $TABLES_FILE  ]; then
     create_dummy_tables
     
 fi
 
+log_debug "$flag_create_defs -eq 0 -a -r $TABLES_FILE "
 if [ $flag_create_defs -eq 0 -a -r $TABLES_FILE  ]; then
     create_defs    
 fi
 
-
+log_debug "$flag_copy_frms -eq 0 -a -r $TABLES_FILE -a -d $SOURCE_DATADIR"
 if [ $flag_copy_frms -eq 0 -a -r $TABLES_FILE -a -d $SOURCE_DATADIR ]; then
     copy_frms
 fi
