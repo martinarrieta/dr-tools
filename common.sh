@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 get_db(){
   echo $(echo $1 | awk -F. '{print $1}')
 }
