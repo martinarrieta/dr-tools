@@ -79,18 +79,15 @@ do
     shift
 done
 
-log_debug "$flag_create_dummy_tables -eq 0 -a -r $TABLES_FILE"
 if [[ $flag_create_dummy_tables -eq 0 ]] && [[ -r $TABLES_FILE ]]; then
     log_info "Creating dummy tables"
     create_dummy_tables
 fi
 
-log_debug "$flag_create_defs -eq 0 -a -r $TABLES_FILE "
 if [[ $flag_create_defs -eq 0 ]] && [[ -r $TABLES_FILE  ]]; then
     create_defs    
 fi
 
-log_debug "$flag_copy_frms -eq 0 -a -r $TABLES_FILE -a -d $SOURCE_DATADIR"
 if [[ $flag_copy_frms -eq 0 ]] && [[ -r $TABLES_FILE ]] && [[ -d $SOURCE_DATADIR ]]; then
     copy_frms
 fi
