@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-. common.sh
+source ./common.sh
 
-. drtools.conf
+source ./drtools.conf
 
 create_dummy_tables(){
 
@@ -48,14 +48,11 @@ copy_frms(){
 
 }
 
+ARGS=$(getopt -l "create-dummy-tables,copy-frms,create-defs,source-datadir:,tables-file:,help" -n "frm_parser.sh" -- -- "$@");
 
-if ! options=$(getopt  --long create-dummy-tables,create-instance,run-temp-instance,help,tables-file: -- "$@")
-then
-    p_help
-    exit 1
-fi
+eval set -- "$ARGS";
 
-set -- $options
+
 
 TABLES_FILE=1
 flag_copy_frms=1
@@ -63,25 +60,22 @@ flag_create_dummy_tables=1
 SOURCE_DATADIR=1
 flag_create_defs=1
 
-while [ $# -gt 0 ] 
-do
+while true; do
   case "$1" in
-    --create-dummy-tables ) flag_create_dummy_tables=0 ;;
-    --copy-frms ) flag_copy_frms=0 ;;
-    --create-defs ) flag_create_defs=0 ;;
-    --source-datadir ) SOURCE_DATADIR="$2"; shift ;;
-    --help ) p_help ;;
-    --tables-file ) TABLES_FILE="$2"; shift ;;
-    (--) shift; break;;
-    (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
-    (*) break;;
+    --create-dummy-tables) flag_create_dummy_tables=0 ;;
+    --copy-frms) flag_copy_frms=0 ;;
+    --create-defs) flag_create_defs=0 ;;
+    --source-datadir) SOURCE_DATADIR="$2"; shift ;;
+    --tables-file) TABLES_FILE="$2"; shift ;;
+    --help) p_help ;;
+    --) break; ;;
     esac
     shift
 done
 
 if [[ $flag_create_dummy_tables -eq 0 && -r $TABLES_FILE ]]; then
     log_info "Creating dummy tables"
-    create_dummy_tables
+    
 fi
 
 if [[ $flag_create_defs -eq 0 && -r $TABLES_FILE  ]]; then

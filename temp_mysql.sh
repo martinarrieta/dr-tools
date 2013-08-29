@@ -1,19 +1,21 @@
-#!/bin/bash
+#!/bin/sh
 
-. common.sh
+source ./common.sh
 
-. drtools.conf
+source ./drtools.conf
 
 
 start_temporal_instance(){
 
-    if [ $FORCE_RECOVERY ]; then
+    if [ $FORCE_RECOVERY -eq 0 ]; then
         FR="--innodb-force-recovery=6"
     else
         FR=""
     fi
     
-    cmd="$TEMP_BIN_mysqld --basedir=$TEMP_basedir --bind-address=127.0.0.1 --socket=$TEMP_datadir/mysql.sock --datadir=$TEMP_datadir --user=$TEMP_user --port=$TEMP_port --pid-file=$TEMP_pidfile $FR"
+    cmd="$TEMP_BIN_mysqld --basedir=$TEMP_basedir --bind-address=127.0.0.1 \
+        --socket=$TEMP_datadir/mysql.sock --datadir=$TEMP_datadir \
+        --user=$TEMP_user --port=$TEMP_port --pid-file=$TEMP_pidfile $FR"
     if [ $DEBUG ]; then
         log_debug "Running: $cmd" 
     fi
@@ -92,19 +94,13 @@ status_temporal_instance(){
     
 }
 
-if ! options=$(getopt -l start,stop,init,status,help -- "$@")
-then
-    p_help
-    exit 1
-fi
+ARGS=$(getopt -l "start,recovery,stop,init,status,help" -n "temp_mysql.sh" -- -- "$@");
 
+eval set -- "$ARGS";
 
-set -- $options
+FORCE_RECOVERY=1
 
-TABLES_FILE=false
-
-while [ $# -gt 0 ] 
-do
+while true; do
   case "$1" in
     --start ) start_temporal_instance ;;
     --recovery ) FORCE_RECOVERY=0; start_temporal_instance ;;
@@ -112,9 +108,8 @@ do
     --init ) initialize_temporal_instance ;;
     --status ) status_temporal_instance ;;
     --help ) p_help ;;
-    (--)  ;;
-    (*)  ;;  
-  esac
-  shift
+    --) break; ;;
+    esac
+    shift
 done
 
