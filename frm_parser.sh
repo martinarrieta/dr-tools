@@ -22,7 +22,8 @@ create_defs(){
         db=$(get_db "$s")
         table=$(get_table "$s")
         
-        cmd="$RT_BIN_create_defs --host=127.0.0.1 --user=root --port=$TEMP_port --db=$db --table=$table > $RT_definitions_directory/table_defs.h.$db.$table"
+        cmd="$RT_BIN_create_defs --host=127.0.0.1 --user=root --port=$TEMP_port --socket=$TEMP_socket --db=$db --table=$table > $RT_definitions_directory/table_defs.h.$db.$table"
+        log_debug "$cmd"
         eval $cmd 
         
     done
