@@ -75,19 +75,19 @@ temporal_instance_isrunning(){
     if [ -f $TEMP_pidfile ]; then
         ps xa | grep mysqld | grep "^$(cat $TEMP_pidfile)" > /dev/null 2>&1
         if [ $? ]; then
-            return 0
+            echo 0
         else
             rm $TEMP_pidfile
-            return 1
+            echo 1
         fi 
     else
-        return 1
+        echo 1
     fi
 }
 status_temporal_instance(){
     tmp=$(temporal_instance_isrunning)
     if [ $tmp -eq 0 ] ; then
-        log_info "Instance is running in port: $TEMP_port and the pid is $(cat $TEMP_pidfile)"
+        log_info "Instance is running in port: $TEMP_port and the pid is "$(cat $TEMP_pidfile)""
     else
         log_info "Instance is not running."
     fi
