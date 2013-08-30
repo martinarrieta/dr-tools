@@ -76,7 +76,7 @@ parse_tables(){
         cmd="cd $RT_definitions_directory"
         
         if [ -f "$RT_definitions_directory/table_defs.h.$db.$table" ]; then
-            cmd="rm $RT_definitions_directory/constraints_parser"
+            cmd="rm $RT_directory/constraints_parser"
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
             
@@ -88,7 +88,7 @@ parse_tables(){
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
              
-            cmd="cd $RT_definitions_directory && make constraints_parser"
+            cmd="make constraints_parser"
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
             
