@@ -53,7 +53,7 @@ get_table_id(){
     db=$1
     table=$2
     id=$($TEMP_BIN_mysql -BN $TEMP_mysql_options -e "SELECT id FROM test.SYS_TABLES WHERE NAME='$db/$table'")
-
+    echo $id
 }
 
 parse_table(){
