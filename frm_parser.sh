@@ -56,6 +56,13 @@ get_table_id(){
     echo $id
 }
 
+get_index_id(){
+    table_id=$1
+    id=$($TEMP_BIN_mysql -BN $TEMP_mysql_options -e "select ID from test.SYS_INDEXES WHERE NAME='PRIMARY' AND TABLE_ID=$table_id")
+    echo $id
+}
+
+
 parse_table(){
     
     db=$1
@@ -70,6 +77,8 @@ parse_tables(){
         db=$(get_db "$s")
         table=$(get_table "$s")
         table_id=$(get_table_id $db $table)
+        index_id=$(get_index_id $table_id)
+        
         echo "runninf for: \nDB:$db\nTable:$table\nID:$table_id"
         
         #Check if the info file exists
@@ -92,7 +101,7 @@ parse_tables(){
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
             
-            cmd="$RT_directory/constraints_parser -5 -f $RT_directory/pages-1377799050/FIL_PAGE_INDEX/0-$table_id 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/data/$db.$table.sql "
+            cmd="$RT_directory/constraints_parser -5 -f $RT_directory/pages-1377799050/FIL_PAGE_INDEX/0-$index_id 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/data/$table"
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
         fi
