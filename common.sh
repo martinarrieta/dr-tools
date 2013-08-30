@@ -49,7 +49,7 @@ temp_run_sql(){
     out=$?
     # &> $LOGFILE
     
-    if [ $? ]; then
+    if [ ! $? ]; then
         log_error "Error runnign $1"
     fi
 }
