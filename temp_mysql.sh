@@ -1,8 +1,8 @@
 #!/bin/sh
 
-source ./common.sh
+./common.sh
 
-source ./drtools.conf
+./drtools.conf
 
 
 start_temporal_instance(){
