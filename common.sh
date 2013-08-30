@@ -39,7 +39,7 @@ temp_run_sql(){
         log_error "$TEMP_BIN_mysql does not exists"
     fi
     
-    cmd="$TEMP_BIN_mysql $TEMP_mysql_options -e \'$1\'"
+    cmd="$TEMP_BIN_mysql $TEMP_mysql_options -e '$1'"
     
     log_debug "Running: $cmd"
     
