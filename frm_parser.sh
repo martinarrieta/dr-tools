@@ -70,8 +70,32 @@ parse_tables(){
         db=$(get_db "$s")
         table=$(get_table "$s")
         table_id=$(get_table_id $db $table)
-        echo "Table $table -> id $table_id"
-        #command 2> error 1> output
+        echo "runninf for: \nDB:$db\nTable:$table\nID:$table_id"
+        
+        #Check if the info file exists
+        cmd="cd $RT_definitions_directory"
+        
+        if [ -f "$RT_definitions_directory/table_defs.h.$db.$table" ]; do
+            cmd="rm $RT_definitions_directory/constraints_parser"
+            eval $cmd 
+            if [ ! $? ]; then log_error "$cmd" fi
+            
+            cmd="rm $RT_definitions_directory/table_defs.h"
+            eval $cmd 
+            if [ ! $? ]; then log_error "$cmd" fi
+                        
+            cmd="ln -s $RT_definitions_directory/table_defs.h.$db.$table $RT_definitions_directory/table_defs.h"
+            eval $cmd 
+            if [ ! $? ]; then log_error "$cmd" fi
+             
+            cmd="cd $RT_definitions_directory && make constraints_parser"
+            eval $cmd 
+            if [ ! $? ]; then log_error "$cmd" fi
+            
+            cmd="constraints_parser -4 -f pages-1377799050/FIL_PAGE_INDEX/0-$table_id 2> dumps/import/$db.$table.sql > dumps/data/$db.$table.sql "
+            eval $cmd 
+            if [ ! $? ]; then log_error "$cmd" fi
+            
     done
 }
 
