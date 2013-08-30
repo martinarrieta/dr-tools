@@ -86,9 +86,9 @@ temporal_instance_isrunning(){
 }
 status_temporal_instance(){
     tmp=$(temporal_instance_isrunning)
-    pidfile="$TEMP_pidfile"
+
     if [ $tmp -eq 0 ] ; then
-        log_info "Instance is running in port: $TEMP_port "
+        log_info "Instance is running in port: $TEMP_port and pid $(cat $TEMP_pidfile) "
     else
         log_info "Instance is not running."
     fi
