@@ -73,7 +73,7 @@ parse_tables(){
         echo "runninf for: \nDB:$db\nTable:$table\nID:$table_id"
         
         #Check if the info file exists
-        cmd="cd $RT_definitions_directory"
+        cmd="cd $RT_directory"
         
         if [ -f "$RT_definitions_directory/table_defs.h.$db.$table" ]; then
             cmd="rm $RT_directory/constraints_parser"
