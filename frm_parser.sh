@@ -75,17 +75,17 @@ done
 
 if [ $flag_create_dummy_tables -eq 0 -a -r $TABLES_FILE ]; then
     log_info "Creating dummy tables"
-    
+    create_dummy_tables
 fi
 
 if [ $flag_create_defs -eq 0 -a -r $TABLES_FILE  ]; then
     log_info "Create defs"
     
-    #create_defs    
+    create_defs    
 fi
 
 if [ $flag_copy_frms -eq 0 -a -r $TABLES_FILE -a -d $SOURCE_DATADIR ]; then
     log_info "copy frms"
     
-    #copy_frms
+    copy_frms
 fi
