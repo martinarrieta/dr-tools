@@ -58,7 +58,7 @@ get_table_id(){
 
 get_index_id(){
     table_id=$1
-    id=$($TEMP_BIN_mysql -BN $TEMP_mysql_options -e "select ID from test.SYS_INDEXES WHERE NAME='PRIMARY' AND TABLE_ID=$table_id")
+    id=$($TEMP_BIN_mysql -BN $TEMP_mysql_options -e "select ID from test.SYS_INDEXES WHERE NAME IN ('PRIMARY', 'GEN_CLUST_INDEX') AND TABLE_ID=$table_id")
     echo $id
 }
 
