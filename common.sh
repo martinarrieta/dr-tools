@@ -47,7 +47,7 @@ temp_run_sql(){
     eval $cmd 
     # &> $LOGFILE
     
-    if [ ! $? ]; then
+    if [ $? -ne 0 ]; then
         log_error "Error runnign $1"
     fi
 }
