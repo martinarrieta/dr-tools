@@ -49,6 +49,33 @@ copy_frms(){
 
 }
 
+get_table_id(){
+    db=$1
+    table=$2
+    id=$($TEMP_BIN_mysql -BN $TEMP_mysql_options -e "SELECT id FROM test.SYS_TABLES WHERE NAME='$db/$table'")
+
+}
+
+parse_table(){
+    
+    db=$1
+    table=$2
+    table_id=$(get_table_id $db $table)
+}
+parse_tables(){
+
+    $table=$1
+    
+    for s in $(cat $TABLES_FILE); do
+        db=$(get_db "$s")
+        table=$(get_table "$s")
+        table_id=$(get_table_id $db $table)
+        echo "Table $table -> id $table_id"
+        #command 2> error 1> output
+    done
+}
+
+
 ARGS=$(getopt -l "create-dummy-tables,copy-frms,create-defs,source-datadir:,tables-file:,help" -n "frm_parser.sh" -- -- "$@");
 
 eval set -- "$ARGS";
@@ -66,6 +93,7 @@ while true; do
     --create-dummy-tables) flag_create_dummy_tables=0 ;;
     --copy-frms) flag_copy_frms=0 ;;
     --create-defs) flag_create_defs=0 ;;
+    --parse-tables) flag_parse_tables=0 ;;
     --source-datadir) SOURCE_DATADIR="$2"; shift ;;
     --tables-file) TABLES_FILE="$2"; shift ;;
     --help) p_help ;;
@@ -78,6 +106,12 @@ if [ $flag_create_dummy_tables -eq 0 -a -r $TABLES_FILE ]; then
     log_info "Creating dummy tables"
     create_dummy_tables
 fi
+
+if [ $flag_parse_tables -eq 0 -a -r $TABLES_FILE ]; then
+    log_info "Creating dummy tables"
+    parse_tables
+fi
+
 
 if [ $flag_create_defs -eq 0 -a -r $TABLES_FILE  ]; then
     log_info "Create defs"
