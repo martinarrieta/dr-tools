@@ -92,7 +92,7 @@ parse_tables(){
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
             
-            cmd="$RT_directory/constraints_parser -4 -f pages-1377799050/FIL_PAGE_INDEX/0-$table_id 2> dumps/import/$db.$table.sql > dumps/data/$db.$table.sql "
+            cmd="$RT_directory/constraints_parser -4 -f $RT_directory/pages-1377799050/FIL_PAGE_INDEX/0-$table_id 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/data/$db.$table.sql "
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
         fi
