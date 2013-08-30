@@ -78,7 +78,7 @@ parse_tables(){
         if [ ! -d "$RT_directory/dumps/$db/" ]; then
             cmd="mkdir $RT_directory/dumps/$db/"
             log_debug "Running: $cmd"
-            eval $cmd 2&> /dev/null
+            eval $cmd > /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
         fi
             
@@ -88,22 +88,22 @@ parse_tables(){
         if [ -f "$RT_definitions_directory/table_defs.h.$db.$table" ]; then
             cmd="rm $RT_directory/constraints_parser"
             log_debug "Running: $cmd"
-            eval $cmd 2&> /dev/null
+            eval $cmd > /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
             
             cmd="rm $RT_definitions_directory/table_defs.h"
             log_debug "Running: $cmd"
-            eval $cmd 2&> /dev/null
+            eval $cmd > /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
                         
             cmd="ln -s $RT_definitions_directory/table_defs.h.$db.$table $RT_definitions_directory/table_defs.h"
             log_debug "Running: $cmd"
-            eval $cmd 2&> /dev/null
+            eval $cmd > /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
              
             cmd="cd $RT_directory && make constraints_parser"
             log_debug "Running: $cmd"
-            eval $cmd 2&> /dev/null
+            eval $cmd > /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
             
             cmd="$RT_directory/constraints_parser -5 \
