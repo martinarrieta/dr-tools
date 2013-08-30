@@ -108,7 +108,7 @@ parse_tables(){
             
             cmd="$RT_directory/constraints_parser -5 \
                 -f $RT_directory/pages-1377799050/FIL_PAGE_INDEX/0-$index_id \
-                -b $RT_directory/pages-1377799050/FIL_PAGE_INDEX 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
+                -b $RT_directory/pages-1377799050/FIL_PAGE_TYPE_BLOB 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
             
