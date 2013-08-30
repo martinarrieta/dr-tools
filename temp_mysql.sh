@@ -73,7 +73,7 @@ initialize_temporal_instance(){
 
 temporal_instance_isrunning(){
     if [ -f $TEMP_pidfile ]; then
-        ps xa | grep mysqld | grep "^$(cat $TEMP_pidfile)" &> /dev/null 
+        ps xa | grep mysqld | grep "^$(cat $TEMP_pidfile)" > /dev/null 2>&1
         if [ $? ]; then
             return 0
         else
