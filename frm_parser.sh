@@ -76,7 +76,7 @@ parse_tables(){
 }
 
 
-ARGS=$(getopt -l "create-dummy-tables,copy-frms,create-defs,source-datadir:,tables-file:,help" -n "frm_parser.sh" -- -- "$@");
+ARGS=$(getopt -l "create-dummy-tables,copy-frms,create-defs,parse-tables,source-datadir:,tables-file:,help" -n "frm_parser.sh" -- -- "$@");
 
 eval set -- "$ARGS";
 
