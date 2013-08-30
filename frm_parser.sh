@@ -62,13 +62,6 @@ get_index_id(){
     echo $id
 }
 
-
-parse_table(){
-    
-    db=$1
-    table=$2
-    table_id=$(get_table_id $db $table)
-}
 parse_tables(){
 
     $table=$1
@@ -79,31 +72,47 @@ parse_tables(){
         table_id=$(get_table_id $db $table)
         index_id=$(get_index_id $table_id)
         
-        echo "runninf for: \nDB:$db\nTable:$table\nID:$table_id"
+        log_info "Running for: \nDB:$db\nTable:$table\nID:$table_id"
         
+        
+        if [ ! -d "$RT_directory/dumps/$db/" ]; then
+            cmd="mkdir $RT_directory/dumps/$db/"
+            log_debug "Running: $cmd"
+            eval $cmd 2&> /dev/null
+            if [ ! $? ]; then log_error "$cmd"; fi
+        fi
+            
         #Check if the info file exists
         cmd="cd $RT_directory"
         
         if [ -f "$RT_definitions_directory/table_defs.h.$db.$table" ]; then
             cmd="rm $RT_directory/constraints_parser"
-            eval $cmd 
+            log_debug "Running: $cmd"
+            eval $cmd 2&> /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
             
             cmd="rm $RT_definitions_directory/table_defs.h"
-            eval $cmd 
+            log_debug "Running: $cmd"
+            eval $cmd 2&> /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
                         
             cmd="ln -s $RT_definitions_directory/table_defs.h.$db.$table $RT_definitions_directory/table_defs.h"
-            eval $cmd 
+            log_debug "Running: $cmd"
+            eval $cmd 2&> /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
              
             cmd="cd $RT_directory && make constraints_parser"
+            log_debug "Running: $cmd"
+            eval $cmd 2&> /dev/null
+            if [ ! $? ]; then log_error "$cmd"; fi
+            
+            cmd="$RT_directory/constraints_parser -5 \
+                -f $RT_directory/pages-1377799050/FIL_PAGE_INDEX/0-$index_id \
+                -b $RT_directory/pages-1377799050/FIL_PAGE_INDEX 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
             
-            cmd="$RT_directory/constraints_parser -5 -f $RT_directory/pages-1377799050/FIL_PAGE_INDEX/0-$index_id 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/default/$table"
-            eval $cmd 
-            if [ ! $? ]; then log_error "$cmd"; fi
+            log_info "Done..."
         fi
     done
 }
