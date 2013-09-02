@@ -107,8 +107,8 @@ parse_tables(){
             if [ ! $? ]; then log_error "$cmd"; fi
             
             cmd="$RT_directory/constraints_parser -5 \
-                -f $RT_directory/pages-1377799050/FIL_PAGE_INDEX/0-$index_id \
-                -b $RT_directory/pages-1377799050/FIL_PAGE_TYPE_BLOB 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
+                -f $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_INDEX/0-$index_id \
+                -b $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_TYPE_BLOB 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
             
@@ -118,7 +118,7 @@ parse_tables(){
 }
 
 
-ARGS=$(getopt -l "create-dummy-tables,copy-frms,create-defs,parse-tables,source-datadir:,tables-file:,help" -n "frm_parser.sh" -- -- "$@");
+ARGS=$(getopt -l "create-dummy-tables,copy-frms,create-defs,parse-tables,pages-directory,source-datadir:,tables-file:,help" -n "frm_parser.sh" -- -- "$@");
 
 eval set -- "$ARGS";
 
@@ -127,8 +127,10 @@ eval set -- "$ARGS";
 TABLES_FILE=1
 flag_copy_frms=1
 flag_create_dummy_tables=1
-SOURCE_DATADIR=1
 flag_create_defs=1
+flag_parse_tables=1
+SOURCE_DATADIR=1
+PAGES_DIRECTORY=1
 
 while true; do
   case "$1" in
@@ -136,6 +138,7 @@ while true; do
     --copy-frms) flag_copy_frms=0 ;;
     --create-defs) flag_create_defs=0 ;;
     --parse-tables) flag_parse_tables=0 ;;
+    --pages-directory) PAGES_DIRECTORY="$2"; shift ;;
     --source-datadir) SOURCE_DATADIR="$2"; shift ;;
     --tables-file) TABLES_FILE="$2"; shift ;;
     --help) p_help ;;
@@ -144,25 +147,40 @@ while true; do
     shift
 done
 
-if [ $flag_create_dummy_tables -eq 0 -a -r $TABLES_FILE ]; then
+if [ $flag_create_dummy_tables -eq 0 ]; then
     log_info "Creating dummy tables"
-    create_dummy_tables
+    if [ -r $TABLES_FILE ]; then
+        create_dummy_tables
+    else
+        log_error "Create dummy tables require the option --tables-file."
+    fi
 fi
 
-if [ $flag_parse_tables -eq 0 -a -r $TABLES_FILE ]; then
+if [ $flag_parse_tables -eq 0 ]; then
     log_info "Creating dummy tables"
-    parse_tables
+    if [ -r $TABLES_FILE -a -d $PAGES_DIRECTORY ]; then
+        parse_tables
+    else
+        log_error "Parse tables requires the option --tables-file and --pages-directory"
+    fi
 fi
 
 
-if [ $flag_create_defs -eq 0 -a -r $TABLES_FILE  ]; then
-    log_info "Create defs"
-    
-    create_defs    
+if [ $flag_create_defs -eq 0 ]; then
+    log_info "Create tables definitions"
+    if [ -a -r $TABLES_FILE ]; then
+        create_defs
+    else
+        log_error "Create table definitions require the option --tables-file."
+    fi
 fi
 
-if [ $flag_copy_frms -eq 0 -a -r $TABLES_FILE -a -d $SOURCE_DATADIR ]; then
+if [ $flag_copy_frms -eq 0 ]; then 
     log_info "copy frms"
     
-    copy_frms
+    if [ -r $TABLES_FILE -a -d $SOURCE_DATADIR ]; then
+        copy_frms
+    else
+        log_error "Copy frm's requires the option --tables-file and --source-datadir"
+    fi
 fi
