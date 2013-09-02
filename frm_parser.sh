@@ -119,6 +119,8 @@ parse_tables(){
                 -5Uf $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_INDEX/0-$index_id \
                 -b $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_TYPE_BLOB 2> \
                 $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
+            
+            log_debug "Running: $cmd"
             eval $cmd > /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
             
