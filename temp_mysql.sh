@@ -13,6 +13,12 @@ start_temporal_instance(){
         FR=""
     fi
     
+    tmp=$(temporal_instance_isrunning)
+
+    if [ $tmp -eq 0 ] ; then
+        log_error "MySQL temporal instance is already running"
+    fi
+    
     cmd="$TEMP_BIN_mysqld --basedir=$TEMP_basedir --bind-address=127.0.0.1 \
         --socket=$TEMP_datadir/mysql.sock --datadir=$TEMP_datadir \
         --user=$TEMP_user --port=$TEMP_port --pid-file=$TEMP_pidfile $FR"
@@ -92,7 +98,6 @@ status_temporal_instance(){
     else
         log_info "Instance is not running."
     fi
-    
 }
 
 ARGS=$(getopt -l "start,recovery,stop,init,status,help" -n "temp_mysql.sh" -- -- "$@");
