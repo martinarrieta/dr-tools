@@ -19,6 +19,10 @@ log_debug() {
     fi
 }
 
+log_warning() {
+    echo "[WARNING] $1"
+}
+
 log_error() {
     echo "[Error] $1"
     exit 1

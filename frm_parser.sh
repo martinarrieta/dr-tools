@@ -86,29 +86,39 @@ parse_tables(){
         cmd="cd $RT_directory"
         
         if [ -f "$RT_definitions_directory/table_defs.h.$db.$table" ]; then
-            cmd="rm $RT_directory/constraints_parser"
-            log_debug "Running: $cmd"
-            eval $cmd > /dev/null
-            if [ ! $? ]; then log_error "$cmd"; fi
             
-            cmd="rm $RT_definitions_directory/table_defs.h"
-            log_debug "Running: $cmd"
-            eval $cmd > /dev/null
-            if [ ! $? ]; then log_error "$cmd"; fi
-                        
-            cmd="ln -s $RT_definitions_directory/table_defs.h.$db.$table $RT_definitions_directory/table_defs.h"
-            log_debug "Running: $cmd"
-            eval $cmd > /dev/null
-            if [ ! $? ]; then log_error "$cmd"; fi
-             
-            cmd="cd $RT_directory && make constraints_parser"
+            
+            if [ -f "$RT_definitions_directory/table_defs.h" ]; then
+                cmd="rm $RT_definitions_directory/table_defs.h"
+                log_debug "Running: $cmd"
+                eval $cmd > /dev/null
+                if [ ! $? ]; then 
+                    log_error "$cmd"; 
+                fi
+            fi
+            
+            if [ -f "$RT_definitions_directory/table_defs.h.$db.$table" ]; then
+                
+                cmd="ln -sf $RT_definitions_directory/table_defs.h.$db.$table \
+                    $RT_definitions_directory/table_defs.h"
+                log_debug "Running: $cmd"
+                eval $cmd > /dev/null
+                if [ ! $? ]; then 
+                    log_error "$cmd"; 
+                fi
+            else
+                log_warning "$RT_definitions_directory/table_defs.h.$db.$table doesn not exists! skipping..."
+            fi
+            
+            cmd="cd $RT_directory && make clean all && make constraints_parser"
             log_debug "Running: $cmd"
             eval $cmd > /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
             
             cmd="$RT_directory/constraints_parser -5 \
                 -f $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_INDEX/0-$index_id \
-                -b $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_TYPE_BLOB 2> $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
+                -b $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_TYPE_BLOB 2> \
+                $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
             eval $cmd 
             if [ ! $? ]; then log_error "$cmd"; fi
             
