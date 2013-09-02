@@ -110,16 +110,16 @@ parse_tables(){
                 log_warning "$RT_definitions_directory/table_defs.h.$db.$table doesn not exists! skipping..."
             fi
             
-            cmd="cd $RT_directory && make clean all && make constraints_parser"
+            cmd="cd $RT_directory && make clean all"
             log_debug "Running: $cmd"
             eval $cmd > /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
             
-            cmd="$RT_directory/constraints_parser -5 \
-                -f $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_INDEX/0-$index_id \
+            cmd="$RT_directory/constraints_parser \
+                -5Uf $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_INDEX/0-$index_id \
                 -b $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_TYPE_BLOB 2> \
                 $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
-            eval $cmd 
+            eval $cmd > /dev/null
             if [ ! $? ]; then log_error "$cmd"; fi
             
             log_info "Done..."
