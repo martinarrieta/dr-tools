@@ -116,8 +116,8 @@ parse_tables(){
             if [ ! $? ]; then log_error "$cmd"; fi
             
             cmd="$RT_directory/constraints_parser \
-                -5Uf $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_INDEX/0-$index_id \
-                -b $RT_directory/$PAGES_DIRECTORY/FIL_PAGE_TYPE_BLOB 2> \
+                -5Uf $PAGES_DIRECTORY/FIL_PAGE_INDEX/0-$index_id \
+                -b $PAGES_DIRECTORY/FIL_PAGE_TYPE_BLOB 2> \
                 $RT_directory/dumps/import/$db.$table.sql > $RT_directory/dumps/$db/$table"
             
             log_debug "Running: $cmd"
